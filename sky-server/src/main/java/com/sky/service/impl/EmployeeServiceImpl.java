@@ -51,6 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //密码比对
         // TODO 后期需要进行md5加密，然后再进行比对
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
         if (!password.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
@@ -64,6 +65,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         //3、返回实体对象
         return employee;
     }
+
     /**
      * 新增员工
      *
@@ -86,13 +88,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setUpdateTime(LocalDateTime.now());
 
         //设置当前记录创建人id和修改人id
-//        employee.setCreateUser(10L);//目前写个假数据，后期修改
-//        employee.setUpdateUser(10L);
-//设置当前记录创建人id和修改人id
         employee.setCreateUser(BaseContext.getCurrentId());//目前写个假数据，后期修改
         employee.setUpdateUser(BaseContext.getCurrentId());
 
-        employeeMapper.insert(employee);//后续步骤定义
+        employeeMapper.insert(employee);
     }
 
     /**
@@ -106,13 +105,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         //开始分页查询
         PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
 
-        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);//后续定义
+        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
 
         long total = page.getTotal();
         List<Employee> records = page.getResult();
 
         return new PageResult(total, records);
     }
+
     /**
      * 启用禁用员工账号
      *
@@ -127,6 +127,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employeeMapper.update(employee);
     }
+
     /**
      * 根据id查询员工
      *
@@ -138,6 +139,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setPassword("****");
         return employee;
     }
+
     /**
      * 编辑员工信息
      *
@@ -152,4 +154,5 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         employeeMapper.update(employee);
     }
+
 }
